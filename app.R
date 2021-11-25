@@ -12,6 +12,9 @@ library(shinydashboard)
 library(shinyWidgets)
 library(ggplot2)
 library(flexdashboard)
+source("scrape inflation data.R")
+source("clean inflation data.R")
+source("calculate.R")
 
 parameters <- list(sidebarwidth = 300)
 # Define UI for application that draws a histogram
@@ -38,7 +41,11 @@ ui <- dashboardPage(
                   format = "yyyy-mm-dd",
                   max = Sys.Date() %m+% months(12)),
         currencyInput(inputId = "salary2", label = "Latest Paycheck Amount in $USD",
-                     value = 0, format = "dollar", align = "left")
+                     value = 0, format = "dollar", align = "left"),
+        br(),
+        br(),
+
+        actionBttn("runAnalysis", "Run Analysis")
 
     ),
 
@@ -72,8 +79,30 @@ ui <- dashboardPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
+    salary1_reac <- reactive({input$salary1})
+    date1_reac <- reactive({input$date1})
+    salary2_reac <- reactive({input$salary2})
+    date2_reac <- reactive({input$date2})
+
+    vals <-reactiveValues(Table = NULL,
+                          Graph = NULL,
+                          gauge = NULL,
+                          textMessage = NULL)
+
+
+    salary_data <- eventReactive(input$runAnalysis, {
+
+        calculate_inflation_adjusted_return(date1 = date1_reac(), date2 = date2_reac(),
+                                            salary1 = salary1_reac(), salary2 = salary2_reac())
+
+    })
+
+
+
+
     output$testTable <- DT::renderDataTable({
-        mtcars
+        salary_data() %>%
+            magrittr::extract2("compounding_table")
     }, options = list(scrollX = TRUE))
 
 
@@ -95,8 +124,9 @@ server <- function(input, output) {
     })
 
 
-    output$textMessage <- renderGauge({
-       print("Here's a text message!")
+    output$textMessage <- renderText({
+        # salary_data()[[3]]
+        "Hello this is temporary"
     })
 
 }
