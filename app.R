@@ -55,7 +55,7 @@ ui <- dashboardPage(
 
         fluidRow(
             box(
-                title = "title text",
+                title = "Inflation-adjusted Change",
                 gaugeOutput("gauge"),
                 footer = "here's some footer text"
                 ),
@@ -68,7 +68,8 @@ ui <- dashboardPage(
             tabBox(
                 width = 12, side = "right", selected = "Graph",
 
-                tabPanel("Table", DT::dataTableOutput("testTable") ),
+                tabPanel("All Time Table", DT::dataTableOutput("AllTimeTableData")),
+                tabPanel("User Table", DT::dataTableOutput("testTable") ),
                 tabPanel("Graph", plotOutput("testPlot"))
                 )
         )
@@ -102,7 +103,11 @@ server <- function(input, output) {
 
     output$testTable <- DT::renderDataTable({
         salary_data() %>%
-            magrittr::extract2("compounding_table")
+            magrittr::extract2("compounding_table") %>%
+            DT::datatable() %>%
+            DT::formatPercentage(c("Annual Inflation"), 2) %>%
+            DT::formatPercentage(c("Daily Inflation Rate"), 6)
+            # DT::formatRound(c("Daily Inflation Rate", "Effective Inflation"), 8)
     }, options = list(scrollX = TRUE))
 
 
@@ -113,20 +118,26 @@ server <- function(input, output) {
     })
 
     output$gauge <- renderGauge({
-        gauge(170,
-              min = 0,
+        gauge(salary_data()[["inflation_adjusted_return_percentage"]],
+              min = -200,
               max = 200,
               symbol = "%",
               # label = "Hello, here is a bunch of text for the label arg",
               sectors = gaugeSectors(success = c(50, 200),
-                                     warning = c(20, 50),
-                                     danger = c(0, 20)))
+                                     warning = c(0, 50),
+                                     danger = c(-200, 0)))
     })
 
 
     output$textMessage <- renderText({
-        # salary_data()[[3]]
-        "Hello this is temporary"
+        salary_data()[["text_output"]]
+    })
+
+    output$AllTimeTableData <- DT::renderDataTable({
+        calculator_net_inflation_table_cleaned_default %>%
+            DT::datatable() %>%
+            DT::formatPercentage(c("Annual Inflation"), 2) %>%
+            DT::formatPercentage(c("Daily Inflation Rate"), 6)
     })
 
 }

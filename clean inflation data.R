@@ -34,6 +34,15 @@ calculator_net_inflation_table_cleaned <- calculator_net_inflation_table_scraped
 
 
 
+
+calculator_net_inflation_table_cleaned_default <- calculator_net_inflation_table_cleaned %>%
+  mutate(yearly_mult_factors = num((1+relative_daily_inflation_rate_of_year)^elapsed_days_in_year, digits = 6) %>%
+           as.numeric()) %>%
+  select(Year, `Annual Inflation` = year_to_year_inflation,
+         `Elapsed Days in Year` = elapsed_days_in_year,
+         `Daily Inflation Rate` = relative_daily_inflation_rate_of_year,
+         `Effective Inflation` = yearly_mult_factors)
+
 # For current year when annualized inflation rate is missing, need to just fill in with otherwise most recent
 # monthly value
 
