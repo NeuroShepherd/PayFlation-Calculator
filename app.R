@@ -70,7 +70,7 @@ ui <- dashboardPage(
 
                 tabPanel("All Time Table", DT::dataTableOutput("AllTimeTableData")),
                 tabPanel("User Table", DT::dataTableOutput("testTable") ),
-                tabPanel("Graph", plotOutput("testPlot"))
+                tabPanel("Graph", plotly::plotlyOutput("testPlot"))
                 )
         )
 
@@ -111,13 +111,15 @@ server <- function(input, output) {
     }, options = list(scrollX = TRUE))
 
 
-    output$testPlot <- renderPlot({
+    output$testPlot <- plotly::renderPlotly({
         calculator_net_inflation_table_cleaned_default %>%
             arrange(Year) %>%
             mutate(`Cumulative Inflation` = cumprod(`Effective Inflation`)) %>%
-            ggplot(aes(Year,`Cumulative Inflation`)) +
+            {ggplot(., aes(x=Year)) +
             theme_bw() +
-            geom_line()
+            geom_line(aes(y=`Cumulative Inflation`)) +
+            geom_bar(aes(y=`Effective Inflation`), stat = "identity")} %>%
+        plotly::ggplotly()
 
         # TODO: update the graph to include a line showing someone's starting and ending
         # salary points so they can compare against inflation visually. Note that doing this
