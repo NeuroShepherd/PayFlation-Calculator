@@ -1,0 +1,20 @@
+
+https://stackoverflow.com/questions/25369817/how-do-i-use-the-lubridate-package-to-calculate-the-number-of-months-between-two
+
+`(as_date("2017-07-01") %--% as_date("2017-12-31")) %/% days(1)`
+
+https://cran.r-project.org/web/packages/lubridate/lubridate.pdf
+
+https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html#The_lung_dataset
+
+
+Create a 4 piece Shiny dashboard?
+ * Box 1 (TL) has the input fields for date1, date2, salary1, salary2
+      - this has been moved to the sidebar!
+
+ * Box 1 (TL) will be a text box that says whether/how much above inflation
+   their returns have been.
+ * Box 2 (TR) This could be one of a valueBox or gauge from flexdashboard
+ * Box 3 (BL) can be a table of inflation for the years the user selected
+ * Box 4 can be a graph of cumulative inflation (e.g. line chart) from time1 to time2
+   and with a default data range of 1970 to present
