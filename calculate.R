@@ -53,8 +53,10 @@ calculate_inflation_adjusted_return <- function(date1, date2, salary1, salary2) 
   inflation_adjusted_return_percentage = {((1+nominal_return)/(cumulative_inflationary_mult_factor)) - 1} %>%
     round(3)*100
 
-  text_output <- glue::glue("Your nominal return return from {date1} to {date2} is {round(nominal_return,3)*100}%, and your
-                            inflation-adjusted return over this same period is {inflation_adjusted_return_percentage}%.")
+  text_output <- glue::glue("Cumulative inflation of the US dollar from {date1} to {date2} is {round(cumulative_inflationary_mult_factor-1, 3)*100 }%.
+  In this same time frame, your salary increased from ${salary1} to ${salary2} which is a nominal {round(nominal_return,3)*100}% increase.
+  This means your inflation-adjusted return over this period is {inflation_adjusted_return_percentage}%. In other terms, you have received
+  a real raise of {inflation_adjusted_return_percentage}% relative to the increased cost of goods over time.")
 
   compounding_table <- cumulative_compounding_info %>%
     select(Year, `Annual Inflation` = year_to_year_inflation, `Compounding Days` = user_days,
@@ -77,7 +79,7 @@ calculate_inflation_adjusted_return <- function(date1, date2, salary1, salary2) 
 
 # as_date("2014-10-12")
 
-calculate_inflation_adjusted_return(as_date("2016-01-01"), as_date("2021-11-24"), 2300, 2843)
+calculate_inflation_adjusted_return(lubridate::as_date("2016-01-01"), lubridate::as_date("2021-11-24"), 2300, 2843)
 #   magrittr::extract2("compounding_table") %>% print() %>% class()
 
 
