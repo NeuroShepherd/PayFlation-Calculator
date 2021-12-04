@@ -112,9 +112,17 @@ server <- function(input, output) {
 
 
     output$testPlot <- renderPlot({
-        ggplot(mtcars, aes(x=mpg, y=wt)) +
-            geom_smooth(method = "lm", se=F) +
-            geom_point(aes(color=factor(cyl)))
+        calculator_net_inflation_table_cleaned_default %>%
+            arrange(Year) %>%
+            mutate(`Cumulative Inflation` = cumprod(`Effective Inflation`)) %>%
+            ggplot(aes(Year,`Cumulative Inflation`)) +
+            theme_bw() +
+            geom_line()
+
+        # TODO: update the graph to include a line showing someone's starting and ending
+        # salary points so they can compare against inflation visually. Note that doing this
+        # means either changing this or creating a new graph where the X-axis and cumprod()
+        # calculations are time-locked to the date1 and date2 inputs
     })
 
     output$gauge <- renderGauge({
