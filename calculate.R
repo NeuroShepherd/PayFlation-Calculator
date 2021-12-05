@@ -54,7 +54,7 @@ calculate_inflation_adjusted_return <- function(date1, date2, salary1, salary2) 
     round(3)*100
 
   text_output <- glue::glue("Cumulative inflation of the US dollar from {date1} to {date2} is {round(cumulative_inflationary_mult_factor-1, 3)*100 }%.
-  In this same time frame, your salary increased from ${salary1} to ${salary2} which is a nominal {round(nominal_return,3)*100}% increase.
+  In this same time frame, your paychecks increased from ${salary1} to ${salary2} per pay period which is a nominal change of {round(nominal_return,3)*100}%.
   This means your inflation-adjusted return over this period is {inflation_adjusted_return_percentage}%. In other terms, you have received
   a real raise of {inflation_adjusted_return_percentage}% relative to the increased cost of goods over time.")
 

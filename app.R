@@ -129,7 +129,7 @@ server <- function(input, output) {
 
     output$gauge <- renderGauge({
         gauge(salary_data()[["inflation_adjusted_return_percentage"]],
-              min = -200,
+              min = -100,
               max = 200,
               symbol = "%",
               # label = "Hello, here is a bunch of text for the label arg",
